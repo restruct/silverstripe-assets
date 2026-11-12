@@ -6,7 +6,6 @@ use SilverStripe\Assets\Dev\TestAssetStore;
 use SilverStripe\Assets\File;
 use SilverStripe\Assets\Flysystem\FlysystemAssetStore;
 use SilverStripe\Dev\FunctionalTest;
-use PHPUnit\Framework\Attributes\DataProvider;
 use ReflectionMethod;
 
 /**
@@ -30,7 +29,7 @@ class ForceDownloadResponseTest extends FunctionalTest
         parent::tearDown();
     }
 
-    public static function provideFileResponse(): array
+    public function provideFileResponse(): array
     {
         return [
             'svg markup under a kml name' => ['company-logo.kml', 'image/svg+xml', 'attachment'],
@@ -44,7 +43,9 @@ class ForceDownloadResponseTest extends FunctionalTest
         ];
     }
 
-    #[DataProvider('provideFileResponse')]
+    /**
+     * @dataProvider provideFileResponse
+     */
     public function testFileResponse(string $filename, string $expectedMime, string $expectedDisposition): void
     {
         $file = File::create();
@@ -60,7 +61,7 @@ class ForceDownloadResponseTest extends FunctionalTest
         $this->assertSame("default-src 'none'; sandbox", $response->getHeader('Content-Security-Policy'));
     }
 
-    public static function provideIsInlineMime(): array
+    public function provideIsInlineMime(): array
     {
         return [
             'svg' => ['image/svg+xml', false],
@@ -82,7 +83,9 @@ class ForceDownloadResponseTest extends FunctionalTest
         ];
     }
 
-    #[DataProvider('provideIsInlineMime')]
+    /**
+     * @dataProvider provideIsInlineMime
+     */
     public function testIsInlineMime(string $mime, bool $expected): void
     {
         $store = new FlysystemAssetStore();
